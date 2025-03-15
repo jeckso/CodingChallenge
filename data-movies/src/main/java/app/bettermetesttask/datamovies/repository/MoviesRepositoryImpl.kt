@@ -17,7 +17,32 @@ class MoviesRepositoryImpl @Inject constructor(
     private val restStore = MoviesRestStore()
 
     override suspend fun getMovies(): Result<List<Movie>> {
-        TODO("Not yet implemented")
+        return try {
+            val remoteMovies = restStore.getMovies()
+            localStore.saveMovies(remoteMovies.map { mapper.mapToLocal(it) })
+            Result.Success(remoteMovies)
+        } catch (e: Exception) {
+            try {
+                val localMovies = localStore.getMovies().map { mapper.mapFromLocal(it) }
+                if (localMovies.isEmpty() && e is IllegalStateException) {
+                    Result.Error(
+                        Exception(
+                            "Network request failed and no cached data available",
+                            e
+                        )
+                    )
+                } else {
+                    Result.Success(localMovies)
+                }
+            } catch (localError: Exception) {
+                Result.Error(
+                    Exception(
+                        "Failed to fetch movies from both remote and local sources",
+                        localError
+                    )
+                )
+            }
+        }
     }
 
     override suspend fun getMovie(id: Int): Result<Movie> {

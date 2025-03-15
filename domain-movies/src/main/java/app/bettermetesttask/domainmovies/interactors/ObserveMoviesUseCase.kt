@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ObserveMoviesUseCase @Inject constructor(
-    private val repository: MoviesRepository
+    private val repository: MoviesRepository,
 ) {
 
     suspend operator fun invoke(): Flow<Result<List<Movie>>> {

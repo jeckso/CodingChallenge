@@ -6,16 +6,16 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import app.bettermetesttask.domainmovies.entries.Movie
 import app.bettermetesttask.featurecommon.utils.images.GlideApp
 import app.bettermetesttask.movies.R
 import app.bettermetesttask.movies.databinding.MovieItemBinding
+import app.bettermetesttask.movies.model.MovieUiModel
 import javax.inject.Inject
 
-class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.MoviesHolder>(MovieItemDiffCallback()) {
+class MoviesAdapter @Inject constructor() : ListAdapter<MovieUiModel, MoviesAdapter.MoviesHolder>(MovieItemDiffCallback()) {
 
-    var onItemClicked: ((movie: Movie) -> Unit)? = null
-    var onItemLiked: ((movie: Movie) -> Unit)? = null
+    var onItemClicked: ((movie: MovieUiModel) -> Unit)? = null
+    var onItemLiked: ((movie: MovieUiModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesHolder {
         return MoviesHolder(MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -26,7 +26,7 @@ class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.Mov
     }
 
     inner class MoviesHolder(private val binding: MovieItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Movie) {
+        fun bind(item: MovieUiModel) {
             with(binding) {
                 titleTv.text = item.title
                 descriptionTv.text = item.description
@@ -54,12 +54,15 @@ class MoviesAdapter @Inject constructor() : ListAdapter<Movie, MoviesAdapter.Mov
     }
 }
 
-class MovieItemDiffCallback : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem == newItem
+class MovieItemDiffCallback : DiffUtil.ItemCallback<MovieUiModel>() {
+    override fun areItemsTheSame(oldItem: MovieUiModel, newItem: MovieUiModel): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: MovieUiModel, newItem: MovieUiModel): Boolean {
+        return oldItem.title == newItem.title &&
+                oldItem.description == newItem.description &&
+                oldItem.posterPath == newItem.posterPath &&
+                oldItem.liked == newItem.liked
     }
 }

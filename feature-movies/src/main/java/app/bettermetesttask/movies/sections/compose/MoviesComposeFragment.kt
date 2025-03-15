@@ -72,7 +72,7 @@ class MoviesComposeFragment : Fragment(), Injectable {
             setContent {
                 val viewState by viewModel.moviesStateFlow.collectAsState()
                 MoviesComposeScreen(viewState, likeMovie = { movie ->
-                    viewModel.likeMovie(movie)
+//                    viewModel.likeMovie(movie)
                 }, viewLoaded = {
                     viewModel.loadMovies()
                 })
@@ -112,6 +112,9 @@ private fun MoviesComposeScreen(
                 ) {
                     CircularProgressIndicator()
                 }
+            }
+            else -> {
+
             }
         }
     }

@@ -11,5 +11,12 @@
         tools:layout="@layout/movies_fragment">
 
         <deepLink app:uri="@string/movies_deep_link" />
+        <action
+            android:id="@+id/action_show_movie_details"
+            app:destination="@id/movieDetailsBottomSheet" />
     </fragment>
+    <dialog
+        android:id="@+id/movieDetailsBottomSheet"
+        android:name="app.bettermetesttask.movies.sections.details.MovieDetailsBottomSheet"
+        android:label="MovieDetailsBottomSheet" />
 </navigation>

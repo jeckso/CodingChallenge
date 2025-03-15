@@ -1,6 +1,7 @@
 package app.bettermetesttask.injection.modules
 
 import app.bettermetesttask.featurecommon.injection.scopes.ActivityScope
+import app.bettermetesttask.movies.injection.MoviesDetailsBuildersModule
 import app.bettermetesttask.movies.injection.MoviesFragmentBuildersModule
 import app.bettermetesttask.sections.home.HomeActivity
 import dagger.Module
@@ -15,6 +16,7 @@ abstract class HomeActivityModule {
         SplashFragmentBuildersModule::class,
         MainNavigationModule::class,
         MoviesFragmentBuildersModule::class,
+        MoviesDetailsBuildersModule::class,
     ])
     abstract fun createHomeActivityInjector(): HomeActivity
 
