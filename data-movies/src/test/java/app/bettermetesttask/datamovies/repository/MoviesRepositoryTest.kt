@@ -1,5 +1,6 @@
 package app.bettermetesttask.datamovies.repository
 
+import app.bettermetesttask.datamovies.cache.MoviesCacheStrategy
 import app.bettermetesttask.datamovies.database.entities.MovieEntity
 import app.bettermetesttask.datamovies.repository.stores.MoviesLocalStore
 import app.bettermetesttask.datamovies.repository.stores.MoviesMapper
@@ -28,11 +29,12 @@ class MoviesRepositoryTest {
 
     private lateinit var mapper: MoviesMapper
     private lateinit var repository: MoviesRepositoryImpl
+    private lateinit var cacheStrategy: MoviesCacheStrategy
 
     @BeforeEach
     fun setup() {
         mapper = MoviesMapper()
-        repository = MoviesRepositoryImpl(localStore, mapper)
+        repository = MoviesRepositoryImpl(localStore, restStore, mapper, cacheStrategy)
 
         // Clear DB before each test
         runTest {

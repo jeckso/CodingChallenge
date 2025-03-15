@@ -38,7 +38,7 @@ class MoviesViewModel @Inject constructor(
     val movies = _movies.asSharedFlow()
 
     fun loadMovies() {
-        viewModelScope.launch(AppDispatchers.io()) {
+        viewModelScope.launch() {
             _moviesStateFlow.value = MoviesState.Loading
             observeMoviesUseCase().flowOn(AppDispatchers.io()).catch { error ->
                 _moviesStateFlow.value = MoviesState.Error(error)

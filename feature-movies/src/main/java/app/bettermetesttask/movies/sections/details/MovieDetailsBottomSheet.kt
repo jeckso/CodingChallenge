@@ -56,6 +56,11 @@ class MovieDetailsBottomSheet : BottomSheetDialogFragment(), Injectable {
         }
     }
 
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     private fun setupViews() {
         binding.btnLike.setOnClickListener {
             viewModel.toggleLike()
@@ -82,11 +87,6 @@ class MovieDetailsBottomSheet : BottomSheetDialogFragment(), Injectable {
                 )
             }
         }
-    }
-
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 
     companion object {

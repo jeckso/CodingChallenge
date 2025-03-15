@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import app.bettermetesttask.domainmovies.errors.MovieError
 import app.bettermetesttask.featurecommon.injection.utils.Injectable
 import app.bettermetesttask.featurecommon.injection.viewmodel.SimpleViewModelProviderFactory
 import app.bettermetesttask.featurecommon.utils.views.gone
@@ -40,8 +41,7 @@ class MoviesFragment : Fragment(R.layout.movies_fragment), Injectable {
             viewModelProvider
         )
     }
-
-    private var job: Job? = null
+    private val coroutineJobs = mutableListOf<Job>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,16 +56,16 @@ class MoviesFragment : Fragment(R.layout.movies_fragment), Injectable {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupListeners()
-        job = viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.moviesStateFlow.collect(::renderMoviesState)
             }
-        }
+        }.also { coroutineJobs.add(it) }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.movies.collect(::submitToAdapter)
             }
-        }
+        }.also { coroutineJobs.add(it) }
     }
 
     override fun onResume() {
@@ -74,7 +74,9 @@ class MoviesFragment : Fragment(R.layout.movies_fragment), Injectable {
     }
 
     override fun onDestroyView() {
-        job?.cancel()
+        coroutineJobs.forEach { it.cancel() }
+        coroutineJobs.clear()
+        _binding = null
         super.onDestroyView()
     }
 
@@ -108,7 +110,16 @@ class MoviesFragment : Fragment(R.layout.movies_fragment), Injectable {
         when (state) {
             MoviesState.Loading -> showLoading()
             is MoviesState.Loaded -> showContent()
-            is MoviesState.Error -> showError(state.error)
+            is MoviesState.Error -> {
+                when (state.error) { //Add specififc errors handling
+                    is MovieError.NetworkError -> showError(state.error)
+                    is MovieError.DatabaseError -> showError(state.error)
+                    is MovieError.NoNetworkAndEmptyCache -> showError(state.error)
+                    is MovieError.CacheError -> showError(state.error)
+                    is MovieError.MovieNotFound -> showError(state.error)
+                }
+            }
+
             else -> showEmpty()
         }
     }

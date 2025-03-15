@@ -3,6 +3,7 @@ package app.bettermetesttask.injection.components
 import android.app.Application
 import android.content.Context
 import app.bettermetesttask.AndroidTestTaskApp
+import app.bettermetesttask.datamovies.injection.CacheModule
 import app.bettermetesttask.datamovies.injection.MoviesDataModule
 import app.bettermetesttask.featurecommon.injection.modules.CommonModule
 import app.bettermetesttask.injection.modules.AppModule
@@ -15,7 +16,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [AppModule::class, AndroidSupportInjectionModule::class, HomeActivityModule::class,
-        CommonModule::class, MoviesDataModule::class]
+        CommonModule::class, MoviesDataModule::class, CacheModule::class]
 )
 interface AppComponent {
 
